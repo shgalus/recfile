@@ -1,0 +1,68 @@
+Date: 2017-08-12
+Number: 1341.2
+%%
+Date: 2017-10-11
+Number: 1711.3
+Note: The number is invalid.
+
+%%%rec: Book
+%%%allowed: Author Title Publisher Year ISBN
+%%%mandatory: Author Title Publisher Year ISBN
+%%%unique: Title Publisher Year ISBN
+
+Author: Anatole Katok
+Author: Boris Hasselblatt
+Title: Introduction to the modern theory of dynamical systems
+Publisher: Cambridge University Press
+Year: 1999
+ISBN: 9780521575577
+%%
+Author: David Cox
+Author: John Little
+Author: Donal O'Shea
+Title: Ideals, varieties, and algorithms
+Publisher: Springer
+Year: 2007
+ISBN: 9780387356501
+%%
+Author: K. B. Athreya
+Author: P. E. Ney
+Title: Branching processes
+Publisher: Dover Publications
+Year: 2004
+ISBN: 0486434745
+
+%%%rec: Article
+
+Author: Christoph Bandt, Bernd Pompe
+Title: Permutation Entropy: A Natural Complexity Measure for Time Series
+Journal: Physical Review Letters
+Volume: 88
+Year: 2002
+%%
+Author: J. Durbin, G. S. Watson
+Title: Testing for serial correlation in least squares regression. I
+Journal: Biometrika
+Volume: 37
+Pages: 409-428
+Year: 1950
+%%
+Author: Jay Earley
+Title: An efficient context-free parsing algorithm
+Journal: Communications of the ACM
+Volume: 13
+Year: 1970
+
+%%%rec: Film
+
+Director: Jerzy Antczak
+Title: Noce i dnie
+Year: 1975
+%%
+Director: Andrzej Wajda
+Title: Korczak
+Year: 1990
+%%
+Director: Wojciech Marczewski
+Title: Zmory
+Year: 1978

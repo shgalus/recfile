@@ -1,0 +1,17 @@
+%% To jest pierwszy rekord.
+Planeta: Merkury
+Promien_orbity: 57 910 000 km
+Srednica: 4 880 km
+Masa: 3,30e23 kg
+%% To jest drugi rekord.
+Planeta: Wenus
+Promien_orbity: 108 200 000 km
+Srednica: 12 103,6 km
+Masa: 4,869e24 kg
+%% To jest trzeci rekord.
+Planeta: Ziemia
+Promien_orbity: 149 600 000 km
+Srednica: 12 756,3 km
+Masa: 5,972e24 kg
+Ksiezyce: Księżyc
+%% To jest koniec pliku.
