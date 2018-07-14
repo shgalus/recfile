@@ -1,10 +1,13 @@
 """
 Module doc.
 """
+import io
+
 
 class Error(Exception):
     "Recjar exception class."
     pass
+
 
 class Recjar:
     """Recjar class."""
@@ -34,8 +37,16 @@ class Recjar:
         return set(field[0] for rec in self.data
                    if isinstance(rec, list) for field in rec)
 
+    def read(self, src):
+        "Reads recjar from a file or an open stream."
+        if isinstance(src, str):
+            self.read_from_file(src)
+        else:
+            self.read_from_stream(src)
+
     def read_from_stream(self, stream):
         "Reads recjar from an open stream."
+        assert isinstance(stream, io.TextIOBase)
         self._stream = stream
         try:
             self._streamname = stream.name
@@ -169,6 +180,7 @@ class Recjar:
         if len(rec) > 0:
             self.data.append(rec)
 
+
 class Recset:
     """Recset class."""
 
@@ -201,7 +213,8 @@ class Recset:
                 for f in z:
                     if not Recjar.isvalid(f):
                         raise Error(
-                            'invalid field name in allowed list')
+                            'invalid field name in allowed list: ' +
+                            f)
                 self.allowed.update(z)
             elif s.startswith('%mandatory:'):
                 z = s[11:].split()
@@ -226,7 +239,7 @@ class Recset:
                     raise Error('duplicated key')
                 f = s[5:].strip()
                 if not Recjar.isvalid(f):
-                    raise Error('invalid field name as key')
+                    raise Error('invalid field name as key: ' + f)
                 self.key = f
             elif s.startswith('%prohibited:'):
                 z = s[12:].split()
@@ -257,7 +270,7 @@ class Recset:
             for r in self.data:
                 for f in r:
                     if f not in allfields:
-                        raise Error('field not allowed')
+                        raise Error('field ' + f + ' not allowed')
         if self.key is not None:
             f = self.key
             set_of_keys = set()
@@ -271,14 +284,14 @@ class Recset:
                 set_of_keys.add(r[f])
         for r in self.data:
             for f in self.mandatory:
-                if not f in r:
-                    raise Error('mandatory field not found')
+                if f not in r:
+                    raise Error('mandatory field ' + f + ' not found')
             for f in self.unique:
                 if f in r and not isinstance(r[f], str):
-                    raise Error('unique field found twice')
+                    raise Error('unique field ' + f + ' found twice')
             for f in r:
                 if f in self.prohibited:
-                    raise Error('prohibited field found')
+                    raise Error('prohibited field ' + f + ' found')
 
     def addrec(self, rec):
         "Add one record."
@@ -296,8 +309,9 @@ class Recset:
         self.data.append(d)
 
     @staticmethod
-    def read_from_file(path):
-        """Returns a list of recsets found in recjar file."""
+    def read(src):
+        """Returns a list of recsets found in the recjar src.
+        src may be a path to file or a stream."""
 
         def read():
             """Creates the recset."""
@@ -307,7 +321,7 @@ class Recset:
                 recsets.append(rset)
 
         rjar = Recjar()
-        rjar.read_from_file(path)
+        rjar.read(src)
         recsets = []
         i = 0
         first = 0
