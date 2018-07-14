@@ -13,9 +13,11 @@ import recfile
 TEST_DIR = os.path.abspath(os.path.dirname(__file__))
 LOCATION = os.path.join(TEST_DIR, 'testdata')
 
+
 def path(fname):
     "Returns absolute path to test data file."
     return os.path.join(LOCATION, fname)
+
 
 class TestRecjar(unittest.TestCase):
     "Tests Recjar."
@@ -168,12 +170,13 @@ class TestRecjar(unittest.TestCase):
                     self.fromstring,
                     inp)
 
+
 class TestRecset(unittest.TestCase):
     "Tests Recset."
 
     def test01(self):
         "Basic test."
-        recsets = Recset.read_from_file(path('misc.txt'))
+        recsets = Recset.read(path('misc.txt'))
         self.assertEqual(len(recsets), 4)
         rset = recsets[0]
         self.assertEqual(rset.name, "Unnamed")
@@ -274,6 +277,56 @@ class TestRecset(unittest.TestCase):
 #           print(i.prohibited)
 #           print(i.data)
 #       print('\n')
+
+    @staticmethod
+    def fromstring(lines):
+        "Returns a list of recsets read from the string."
+        return Recset.read(io.StringIO(lines))
+
+    def test02(self):
+        "Test incorrect input."
+        cases = [
+            ("%%%rec: Book\n%%%key: Number No\nNumber: 1\nNo: 2\n",
+             "invalid field name as key: Number No"),
+            ("%%%rec: Book\n%%%key: Number\n%%%key: No\n"
+             "Number: 1\nNo: 2\n",
+             "duplicated key"),
+            ("%%%rec: Book\n%%%allowed:\nAuthor:\n",
+             "empty allowed list"),
+            ("%%%rec: Book\n%%%allowed: _a\nAuthor:\n",
+             "invalid field name in allowed list: _a"),
+            ("%%%rec: Book\n%%%allowed: Author\nNumber: 1\n",
+             "field Number not allowed"),
+            ("%%%rec: Book\n%%%key: Number\nAuthor:\nTitle:\n",
+             "no key found"),
+            ("%%%rec: Book\n%%%key: Number\nNumber: 1\nAuthor:\n"
+             "Title:\nNumber: 2\n",
+             "two fields with key found"),
+            ("%%%rec: Book\n%%%key: Number\n"
+             "Number: 1\nAuthor:\nTitle:\n"
+             "%%\n"
+             "Number: 2\nAuthor:\nTitle:\n"
+             "%%\n"
+             "Number: 1\nAuthor:\nTitle:\n",
+             "duplicated key found"),
+            ("%%%rec: Book\n%%%mandatory: Author Title\n"
+             "Author1:\nTitle:\n",
+             "mandatory field Author not found"),
+            ("%%%rec: Book\n%%%unique: Title\n"
+             "Title:\nAuthor:\nTitle:\n",
+             "unique field Title found twice"),
+            ("%%%rec: Book\n%%%prohibited: Journal\n"
+             "Author:\nTitle:\nJournal:\n",
+             "prohibited field Journal found")
+        ]
+
+        for src, msg in cases:
+            with self.subTest(msg):
+                self.assertRaisesRegex(
+                    recfile.Error,
+                    msg,
+                    self.fromstring,
+                    src)
 
 if __name__ == '__main__':
     unittest.main()
