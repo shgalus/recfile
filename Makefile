@@ -15,6 +15,6 @@ pep8:
 test:
 	$(PYTHON) -m unittest discover
 clean:
-	rm -rf __pycache__
+	rm -rf __pycache__ recfile.pyc
 	cd testdata && rm -f *.out
 spotless: clean
