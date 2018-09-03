@@ -6,6 +6,7 @@ import unittest
 import io
 import os
 import filecmp
+from recfile import format_line
 from recfile import Recjar
 from recfile import Recset
 import recfile
@@ -13,11 +14,31 @@ import recfile
 TEST_DIR = os.path.abspath(os.path.dirname(__file__))
 LOCATION = os.path.join(TEST_DIR, 'testdata')
 
+class TestFormatLine(unittest.TestCase):
+    "Tests format_line."
+    def test01(self):
+        "Basic test."
+        self.assertEqual(format_line(""), "")
+        self.assertEqual(format_line(" \n \r \t "), "")
+        self.assertEqual(format_line("a" * 70), "a" * 70)
+        self.assertEqual(format_line(("a" * 70) + " b"),
+                         "a" * 70 + "\n  b")
+        line = """ aa bbb  cccc ddddd eeeeee fffffff gggggggg
+        hhhhhhhhh iiiiiiiiii jjjjjjjjjjj kkkkkkkkkkkk lll
+        mmmmmmm nnnnnnnnnnnnnnn ooo ppp qq r s t uuuuuuuuuuu
+        vvv wwwwwww xxxxxxxxxxxx yyyy zzzzz"""
+
+        formatted = "aa bbb cccc ddddd eeeeee fffffff gggggggg " \
+                    "hhhhhhhhh iiiiiiiiii\n" \
+                    "  jjjjjjjjjjj kkkkkkkkkkkk lll mmmmmmm " \
+                    "nnnnnnnnnnnnnnn ooo ppp qq r s\n" \
+                    "  t uuuuuuuuuuu vvv wwwwwww xxxxxxxxxxxx yyyy " \
+                    "zzzzz"
+        self.assertEqual(format_line(line), formatted)
 
 def path(fname):
     "Returns absolute path to test data file."
     return os.path.join(LOCATION, fname)
-
 
 class TestRecjar(unittest.TestCase):
     "Tests Recjar."
@@ -267,7 +288,7 @@ class TestRecset(unittest.TestCase):
               'Title': 'Zmory',
               'Director':
               'Wojciech Marczewski'}])
-        print('\n')
+
 #       for i in recsets:
 #           print(i.name)
 #           print(i.allowed)
