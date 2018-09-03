@@ -3,6 +3,38 @@ Module doc.
 """
 import io
 
+def format_line(line, maxlen=70, prefix="  "):
+    r"""Formats a long string into a sequence of lines.
+
+Input:
+    line - a string to format
+    maxlen - maximum line length
+    prefix - a prefix to be added at the beginning of each line except
+    the first one
+
+Output: string containing lines
+
+Remarks: The function does not split non-whitespace sequences, so the
+resulting lines may be longer than maxlen. The lines are separated
+with "\n". The last line does not end with a "\n". If the input string
+is empty, the function returns an empty string.
+    """
+
+    p = line.split()
+    lenp = len(p)
+    l = []
+    s = p[0] if lenp > 0 else ""
+    i = 1
+    while i < lenp:
+        if len(s) + 1 + len(p[i]) > maxlen:
+            l.append(s)
+            s = prefix + p[i]
+        else:
+            s += " " + p[i]
+        i += 1
+    if s:
+        l.append(s)
+    return "\n".join(l)
 
 class Error(Exception):
     "Recjar exception class."
